@@ -1,0 +1,159 @@
+---
+title: "EOAD2526"
+format: pptx
+theme: simple
+# math-method: mathjax
+slide-level: 0
+lang: pt
+
+---
+
+# EOAD 2025/2026 :: Inference - Introduction
+
+---
+
+## Slide 1 — Why Inference Matters in Modelling Workflows
+
+- Statistical inference is not limited to testing hypotheses in isolation.  
+- It supports every step of model building and evaluation:
+  1. **Exploratory association analysis** — identifying meaningful relationships.
+  2. **Feature selection** — deciding which predictors improve the model.
+  3. **Model validation** — determining if observed performance differences are real.  
+- Inferential reasoning allows us to distinguish **signal from noise** in modeling results.
+
+---
+
+## Slide 2 — Exploratory Association Analysis
+
+- In the early stage of analysis, we ask: *Are two variables related?*
+- **Correlation analysis** quantifies linear or monotonic association:
+  $$
+  r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{(n-1)s_x s_y}
+  $$
+- But $r$ from a sample is subject to uncertainty.  
+  The sampling distribution of $r$ allows inference on whether the population correlation $\rho$ differs from zero.
+- Hypothesis test:
+  $$
+  H_0: \rho = 0 \quad \text{vs.} \quad H_1: \rho \neq 0
+  $$
+- Confidence intervals for $\rho$ (via Fisher’s $z$-transform) convey strength and uncertainty of association.
+
+> Insert Figure: *Correlation scatterplot* (`figs/correlation_example.png`)
+
+---
+
+## Slide 3 — Beyond Correlation: Association and Causality
+
+- Inferential association ≠ causal relation.  
+  Correlation supports **variable screening**, not causal inference.  
+- Exploratory inference answers:
+  - Which relationships are likely not due to chance?
+  - Which are worth including in multivariate models?
+- Subsequent modeling (e.g., regression) must confirm whether associations persist *conditional on other variables*.
+
+---
+
+## Slide 4 — Variable Relevance and Model-Based Inference
+
+- Feature inclusion can be guided by inferential reasoning:
+  - In regression: test if coefficient $\beta_j = 0$ using $t$ or $F$ tests.
+  - In tree-based or ML models: use resampling to estimate *variable importance* distributions.
+- Uncertainty-aware variable selection:
+  - Include predictors only if their contribution is consistently significant across resamples.
+- This helps avoid **spurious predictors** that only appear relevant due to sample noise.
+
+> Insert Figure: *Variable importance with confidence intervals* (`figs/var_importance_ci.png`)
+
+---
+
+## Slide 5 — Comparing Competing Models
+
+- Suppose we compare two models: $M_1$ and $M_2$.  
+  Both are trained on the same data and evaluated by a performance metric (e.g., RMSE, AUC, $R^2$).
+- Question: *Is the observed difference in performance statistically significant, or just random?*
+- We need inference on **cross-validation results**, not single test scores.
+
+---
+
+## Slide 6 — Cross-Validation as an Inferential Procedure
+
+- $k$-fold cross-validation yields $k$ performance estimates per model:  
+  $\{s_{1}^{(1)}, s_{2}^{(1)}, \ldots, s_{k}^{(1)}\}$ and $\{s_{1}^{(2)}, \ldots, s_{k}^{(2)}\}$.
+- We can test whether their mean performances differ:
+  $$
+  H_0: \mu_1 = \mu_2 \quad \text{vs.} \quad H_1: \mu_1 \neq \mu_2
+  $$
+- Paired $t$-test on fold-wise differences:
+  $$
+  t = \frac{\bar{d}}{s_d / \sqrt{k}}
+  $$
+  where $\bar{d}$ is the mean of $(s_i^{(1)} - s_i^{(2)})$.
+- If $p < \alpha$, we reject $H_0$: models differ more than expected by random fold variation.
+
+> Insert Figure: *Cross-validation distributions and paired differences* (`figs/cv_model_comparison.png`)
+
+---
+
+## Slide 7 — Confidence Intervals on Model Performance
+
+- Cross-validation estimates can be summarized with means and CIs:
+  $$
+  \bar{s} \pm t_{k-1,1-\alpha/2} \cdot \frac{s}{\sqrt{k}}
+  $$
+- Overlapping intervals ≠ identical performance — but large overlap suggests limited evidence of difference.
+- Visualization:
+  - Bars or violin plots with mean ± CI.
+  - Difference distribution plots (e.g., bootstrap resampling).
+- Inferential framing: “Given variability across folds, how confident are we that $M_2$ outperforms $M_1$?”
+
+---
+
+## Slide 8 — Resampling-Based Inference
+
+- When distributional assumptions are doubtful:
+  - Use **bootstrap** to estimate the sampling distribution of a performance metric.
+  - Compute percentile or BCa confidence intervals for mean differences.
+- In practice:
+  - Repeat CV many times (repeated $k$-fold CV).
+  - Compare performance difference distributions across repetitions.
+- These empirical intervals provide a **robust inferential assessment** of model superiority.
+
+---
+
+## Slide 9 — Integrating Inference Across the Workflow
+
+| Workflow Stage | Inferential Objective | Typical Method |
+|:----------------|:----------------------|:----------------|
+| Exploratory | Association between variables | Correlation tests (Pearson, Spearman) |
+| Modelling | Significance of predictors | $t$-tests, F-tests, regularization paths |
+| Validation | Differences in model performance | Paired $t$-test, bootstrap intervals |
+| Decision Support | Quantifying uncertainty | Confidence intervals, predictive distributions |
+
+> Table for conceptual overview only; not rendered in slides.
+
+---
+
+## Slide 10 — Practical Guidelines
+
+- Always attach **uncertainty quantification** to performance and parameter estimates.
+- Avoid overinterpreting single-sample metrics.
+- Repetition and resampling are essential for robust inference.
+- Prefer interpretable inferential summaries:
+  - Effect sizes with CIs over binary significance.
+  - Visual comparison of uncertainty bands over raw numbers.
+- Inference turns empirical patterns into **evidence-based conclusions**.
+
+---
+
+## Slide 11 — Summary
+
+- Exploratory inference detects likely relationships.  
+- Model-based inference tests variable relevance.  
+- Cross-validation inference validates model generalization.  
+- Together, these components ensure:
+  $$
+  \text{Data} \;\to\; \text{Model} \;\to\; \text{Evidence-based Decision}.
+  $$
+
+
+---
