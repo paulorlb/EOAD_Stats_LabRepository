@@ -1,0 +1,6 @@
+*.env
+data/
+notebooks/previous_year/
+notebooks/management_help
+notebooks/quarto/
+log/
