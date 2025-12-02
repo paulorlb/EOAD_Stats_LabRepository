@@ -1,5 +1,4 @@
 *.env
 data/
 notebooks/admin/
-notebooks/quarto/
 log/
